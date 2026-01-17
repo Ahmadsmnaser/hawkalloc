@@ -60,10 +60,13 @@ void init_allocator(size_t total_size)
     if (free_list_header == NULL)
     {
         void *ptr = mmap(NULL, total_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MMAP_ANON_FLAG, -1, 0);
+        arena_start = (char *)ptr;
+        arena_end = arena_start + total_size;
         if (ptr == MAP_FAILED)
         {
             return;
         }
+        arena_end = (char *)ptr + total_size;
         free_list_header = (BlockMemory *)ptr;
         free_list_header->size = total_size - sizeof(BlockMemory);
         free_list_header->is_free = true;

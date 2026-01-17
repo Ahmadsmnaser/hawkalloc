@@ -13,7 +13,8 @@ typedef struct BlockMemory {
 } BlockMemory;
 
 extern BlockMemory *free_list_header; // Head of the free list
-
+extern char* arena_start; // Start of the memory arena
+extern char* arena_end; // End of the memory arena
 
 void init_allocator(size_t total_size);
 BlockMemory *find_first_fit(size_t requested_size);

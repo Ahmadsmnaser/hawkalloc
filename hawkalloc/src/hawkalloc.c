@@ -78,6 +78,27 @@ void *ha_calloc(size_t num, size_t size)
     return ptr;
 }
 
+void *coalesce_forward(BlockMemory *block)
+{
+    // BlockMemory *next_block = (char *)block + sizeof(BlockMemory) + block->size;
+    BlockMemory *next_block = (BlockMemory *)((char *)block + sizeof(BlockMemory) + block->size);
+    if ((char *)next_block >= (char *)arena_end)
+    {
+        return block;
+    }
+    if (next_block->is_free)
+    {
+        remove_from_free_list(next_block);
+        block->size += sizeof(BlockMemory) + next_block->size;
+        block->is_free = true;
+    }
+    else
+    {
+        return block;
+    }
+    return block;
+}
+
 void ha_free(void *ptr)
 {
     if (ptr == NULL)
@@ -87,6 +108,7 @@ void ha_free(void *ptr)
     BlockMemory *block = (BlockMemory *)((char *)ptr - sizeof(BlockMemory));
     block->is_free = true;
     // Add the block back to the free list
+    block = coalesce_forward(block);
     BlockMemory *current = free_list_header;
     if (current == NULL)
     {

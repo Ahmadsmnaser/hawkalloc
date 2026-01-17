@@ -63,5 +63,6 @@ When a block is freed:
 - It is marked as free
 - It is inserted back into the free list
 - Adjacent free blocks may be merged to reduce fragmentation
+- (Current) forward coalescing only - does not coalesce with previous block (planned with the next edit)
 
 Coalescing is performed eagerly to improve long-term memory reuse.
