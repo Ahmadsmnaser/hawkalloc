@@ -80,3 +80,45 @@ Each test is a standalone C program that validates one specific behavior.
 - Final full cleanup
 
 ✔️ All phases pass without crashes or corruption.
+
+🚧 Limitations & Future Work
+
+No backward coalescing (boundary tags not implemented yet)
+
+Single arena only
+
+No thread-safety (no locks)
+
+No munmap of individual blocks
+
+No alignment macros (can be added easily)
+
+Planned Improvements
+
+Boundary tags for backward coalescing
+
+Alignment guarantees (e.g. 16-byte)
+
+Debug mode with magic numbers
+
+Allocation statistics & profiling
+
+Thread-safe version using mutexes
+
+🎯 Why This Project?
+
+This project was built to:
+
+Deepen understanding of low-level memory management
+
+Practice systems programming in C
+
+Explore allocator internals beyond textbook theory
+
+Serve as a portfolio project demonstrating OS-level concepts
+
+
+🙌 Author
+
+Ahmad Naser
+Computer Science student | Systems & Low-Level Programming
