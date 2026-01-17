@@ -10,14 +10,14 @@ HawkAlloc is a learning-focused low-level project that explores how dynamic memo
 
 ## ✨ Features
 
-- Custom `malloc`, `free`, `calloc`, and `realloc` implementations
-- Arena-based allocation using `mmap`
-- Explicit block metadata (headers)
-- Doubly-linked free list
-- First-fit allocation strategy
-- Block splitting
-- **Forward coalescing** to reduce fragmentation
-- Robust test suite + stress testing
+- Custom `malloc`, `free`, `calloc`, and `realloc` implementations  
+- Arena-based allocation using `mmap`  
+- Explicit block metadata (headers)  
+- Doubly-linked free list  
+- First-fit allocation strategy  
+- Block splitting  
+- **Forward coalescing** to reduce fragmentation  
+- Robust unit tests and stress testing  
 - Written in pure C (Linux user-space)
 
 ---
@@ -27,26 +27,26 @@ HawkAlloc is a learning-focused low-level project that explores how dynamic memo
 ### Memory Model
 - Memory is obtained from the OS using a single **arena** allocated via `mmap`
 - The arena is divided into blocks
-- Each block contains:
-  - A header (`BlockMemory`)
+- Each block consists of:
+  - A block header (`BlockMemory`)
   - A payload returned to the user
 
 ### Free List
 - Only **free blocks** are stored in the free list
-- The free list is doubly linked
+- The free list is implemented as a doubly linked list
 - Allocated blocks are removed from the list
 
 ### Allocation Strategy
 - **First-fit** search over the free list
-- If a free block is significantly larger than requested:
-  - It is **split** into:
+- If a free block is significantly larger than the requested size:
+  - The block is **split** into:
     - An allocated block
     - A smaller free block
 
 ### Freeing & Coalescing
 - Freed blocks are reinserted into the free list
 - **Forward coalescing**:
-  - If the next adjacent block in memory is free, the blocks are merged
+  - If the next adjacent block in memory is free, the two blocks are merged
 - Arena bounds are checked to prevent invalid memory access
 
 > Backward coalescing (via boundary tags) is intentionally left as a future improvement.
@@ -56,7 +56,8 @@ HawkAlloc is a learning-focused low-level project that explores how dynamic memo
 ## 🧪 Testing
 
 ### Unit Tests
-Located in the `tests/` directory:
+Located in the `tests/` directory.  
+Each test is a standalone C program validating a specific behavior:
 
 - `test_malloc_basic`
 - `test_malloc_zero`
@@ -67,58 +68,53 @@ Located in the `tests/` directory:
 - `test_realloc_grow_preserves`
 - `test_realloc_shrink_preserves_prefix`
 
-Each test is a standalone C program that validates one specific behavior.
-
 ---
 
 ### Stress Test (v2)
-`stress_test_v2.c` performs:
+
+The stress test (`stress_test_v2.c`) performs:
+
 - 10,000 allocations with random sizes
-- Randomized freeing
+- Randomized freeing of blocks
 - Re-allocation into freed slots
-- Pattern writing & verification (detects memory corruption)
-- Final full cleanup
+- Pattern writing and verification (detects memory corruption)
+- Final full cleanup of all blocks
 
-✔️ All phases pass without crashes or corruption.
+✔️ All phases pass without crashes or detected memory corruption.
 
-🚧 Limitations & Future Work
+---
 
-No backward coalescing (boundary tags not implemented yet)
+## 🚧 Limitations & Future Work
 
-Single arena only
+### Current Limitations
+- No backward coalescing (boundary tags not implemented)
+- Single arena only
+- No thread-safety (no locks)
+- No `munmap` of individual blocks
+- No explicit alignment macros
 
-No thread-safety (no locks)
+### Planned Improvements
+- Boundary tags for backward coalescing
+- Alignment guarantees (e.g. 16-byte alignment)
+- Debug mode with magic numbers and validation checks
+- Allocation statistics and profiling
+- Thread-safe version using mutexes
 
-No munmap of individual blocks
+---
 
-No alignment macros (can be added easily)
-
-Planned Improvements
-
-Boundary tags for backward coalescing
-
-Alignment guarantees (e.g. 16-byte)
-
-Debug mode with magic numbers
-
-Allocation statistics & profiling
-
-Thread-safe version using mutexes
-
-🎯 Why This Project?
+## 🎯 Why This Project?
 
 This project was built to:
 
-Deepen understanding of low-level memory management
+- Deepen understanding of low-level memory management
+- Practice systems programming in C
+- Explore allocator internals beyond textbook theory
+- Serve as a portfolio project demonstrating OS-level concepts
 
-Practice systems programming in C
+---
 
-Explore allocator internals beyond textbook theory
+## 🙌 Author
 
-Serve as a portfolio project demonstrating OS-level concepts
-
-
-🙌 Author
-
-Ahmad Naser
-Computer Science student | Systems & Low-Level Programming
+**Ahmad Naser**  
+Computer Science student  
+Focus: Systems & Low-Level Programming
